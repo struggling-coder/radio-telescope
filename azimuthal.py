@@ -3,55 +3,53 @@
 import RPi.GPIO as GPIO
 from time import sleep
 
-def two_second_spin():
-  GPIO.setmode(GPIO.BOARD)
-   
-  Motor1A = 16
-  Motor1B = 18
-  Motor1E = 22
-   
-  GPIO.setup(Motor1A,GPIO.OUT)
-  GPIO.setup(Motor1B,GPIO.OUT)
-  GPIO.setup(Motor1E,GPIO.OUT)
-   
-  print "Turning motor on"
-  GPIO.output(Motor1A,GPIO.HIGH)
-  GPIO.output(Motor1B,GPIO.LOW)
-  GPIO.output(Motor1E,GPIO.HIGH)
-   
-  sleep(2)
-   
-  print "Stopping motor"
-  GPIO.output(Motor1E,GPIO.LOW)
-   
+AzimuthPin1 = 14
+AzimuthPin2 = 15
+
+PolarPin1 = 20
+PolarPin2 = 21
+
+CalibPin = -1 #think about this
+
+timeOfAzimuth = 0
+
+def calibrate(what=0):
+  '''0 is both, 1 is azimuth and 2 is polar'''
+
+def setupPins():
+  GPIO.setmode(GPIO.BCM)
+  GPIO.setup(AzimuthPin1,GPIO.OUT)
+  GPIO.setup(AzimuthPin2,GPIO.OUT)
+  GPIO.setup(PolarPin1,GPIO.OUT)
+  GPIO.setup(PolarPin2,GPIO.OUT)
+
+def fireA(mode, q):
+  '''mode 0 means angle, mode 1 means time'''
+  if mode is 0:
+    setupPins()
+    GPIO.output(AzimuthPin1,GPIO.HIGH)
+    GPIO.setup(AzimuthPin2,GPIO.LOW)
+    sleep(q/360.0 * timeOfAzimuth)
+    GPIO.output(AzimuthPin1,GPIO.LOW)
+    GPIO.setup(AzimuthPin2,GPIO.LOW)
+  else:
+    setupPins()
+    GPIO.output(AzimuthPin1,GPIO.HIGH)
+    GPIO.setup(AzimuthPin2,GPIO.LOW)
+    sleep(q)
+    GPIO.output(AzimuthPin1,GPIO.LOW)
+    GPIO.setup(AzimuthPin2,GPIO.LOW)
+  GPIO.cleanup()
+  
+def twos():
+  setupPins()
+  GPIO.output(AzimuthPin1,GPIO.HIGH)
+  GPIO.setup(AzimuthPin2,GPIO.LOW)
+  sleep(q/360.0 * timeOfAzimuth)
+  GPIO.output(AzimuthPin1,GPIO.LOW)
+  GPIO.setup(AzimuthPin2,GPIO.LOW)
   GPIO.cleanup()
 
 def reverse_spin():
-  GPIO.setmode(GPIO.BOARD)
-   
-  Motor1A = 16
-  Motor1B = 18
-  Motor1E = 22
-   
-  GPIO.setup(Motor1A,GPIO.OUT)
-  GPIO.setup(Motor1B,GPIO.OUT)
-  GPIO.setup(Motor1E,GPIO.OUT)
-   
-  print "Going forwards"
-  GPIO.output(Motor1A,GPIO.HIGH)
-  GPIO.output(Motor1B,GPIO.LOW)
-  GPIO.output(Motor1E,GPIO.HIGH)
-   
-  sleep(2)
-   
-  print "Going backwards"
-  GPIO.output(Motor1A,GPIO.LOW)
-  GPIO.output(Motor1B,GPIO.HIGH)
-  GPIO.output(Motor1E,GPIO.HIGH)
-   
-  sleep(2)
-   
-  print "Now stop"
-  GPIO.output(Motor1E,GPIO.LOW)
-   
+  GPIO.setmode(GPIO.BCM)
   GPIO.cleanup()
